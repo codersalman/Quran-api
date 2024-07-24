@@ -5,6 +5,8 @@ import pageData from './db/page-data.json';
 import juzData from './db/juz-data.json';
 import sajdahVerses from './db/sajdah-verses.json';
 import enClearQuran from './db/translations/enClearQuran.json';
+import urTranslation from './db/translations/urTranslation.json';
+import enSaheeh from './db/translations/enSaheeh.json';
 
 
 const totalPagesCount = 604;
@@ -43,22 +45,32 @@ function getVerseCountByPage(pageNumber) {
 }
 
 function getJuzNumber(surahNumber, verseNumber) {
-	for (const juz of juzData) {
-		if (juz["verses"].hasOwnProperty(surahNumber)) {
-			if (verseNumber >= juz["verses"][surahNumber][0] &&
-				verseNumber <= juz["verses"][surahNumber][1]) {
-				return parseInt(juz["id"]);
+
+	for (let i = 0; i < juzData.length; i++) {
+		const susurahs = juzData[i]["surahs"];
+
+		for (let j = 0; j < susurahs.length; j++) {
+			if (susurahs[j] === surahNumber) {
+
+				let verseCount = getVerseCount(surahNumber);
+				if (verseNumber <= verseCount) {
+
+					const juz = {
+						"number": i + 1,
+						"name": juzData[i]["name"],
+					}
+					return juz;
+				}
 			}
 		}
+
 	}
-	return -1;
 }
 
 function getSurahAndVersesFromJuz(juzNumber) {
 	if (juzNumber > 30 || juzNumber <= 0) {
 		throw "No Juz found with given juzNumber";
 	}
-	console.log(juzData[29]["verses"]);
 	return juzData[juzNumber - 1]["verses"];
 }
 
@@ -241,12 +253,14 @@ function getVersesTextByPage(
 	return versesText.trim();
 }
 
-function getChapterAndItsVerses(surahNumber) {
+ function getChapterAndItsVerses(surahNumber) {
 
-	const chapter = surahData[surahNumber - 1];
+	if (surahNumber > 114 || surahNumber <= 0) {
+		throw "No Surah found with given surahNumber";
+	}
+
 	const verses = quranText.filter(verse => verse.surah_number === surahNumber);
-
-	return { chapter, verses  };
+	return {verses };
 
 
 }
@@ -258,15 +272,40 @@ function checkSajdah(verseNumber, surahNumber) {
 }
 
 function getVerseTranslation(surahNumber, verseNumber, lang) {
+
+		let translation = {};
+		for (const i of enClearQuran) {
+			if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
+				translation.en = i['content'];
+			}
+		}
+
+		for (const i of urTranslation) {
+			if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
+				translation.ur = i['content'];
+			}
+		}
+
+	for (const i of enSaheeh) {
+		if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
+			translation.enSaheeh = i['content'];
+		}
+	}
+
+
+
+		return translation;
+
+	}
 	// const verse = quranText.find(verse => verse.surah_number === surahNumber && verse.verse_number === verseNumber);
 	// return verse.translation;
-
-	if (surahNumber > 114 || surahNumber <= 0) {
-		throw "No verse found with given surahNumber";
-	}
-	if (verseNumber > getVerseCount(surahNumber) || verseNumber <= 0) {
-		throw "No verse found with given verseNumber";
-	}
+	//
+	// if (surahNumber > 114 || surahNumber <= 0) {
+	// 	throw "No verse found with given surahNumber";
+	// }
+	// if (verseNumber > getVerseCount(surahNumber) || verseNumber <= 0) {
+	// 	throw "No verse found with given verseNumber";
+	// }
 
 	// if (lang === 'en') {
 	// 	return quranText.find(verse => verse.surah_number === surahNumber && verse.verse_number === verseNumber).translation;
@@ -274,7 +313,7 @@ function getVerseTranslation(surahNumber, verseNumber, lang) {
 
 	// console.log("enClearQuran", enClearQuran);
 
-}
+
 
 
 module.exports = {

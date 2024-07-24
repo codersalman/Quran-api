@@ -32,24 +32,22 @@ function api(endpoint , lang){
 
 	}else if (endpoint.startsWith("chapter")) {
 		endpoint = endpoint.replace("chapter/", "");
+		lang = lang || "en";
 		const surahNumber = parseInt(endpoint);
 		if (surahNumber > 114 || surahNumber <= 0) {
 			throw "No Surah found with given surahNumber";
 		}
-		// getVerseTranslation( surahNumber, lang);
+
 	  let verseData =	getChapterAndItsVerses(surahNumber).verses.map((verse) => {
-			verse.text = verse.content;
-			verse.verse_number_in_surah = verse.verse_number;
+			verse.aya_number_in_surah = verse.verse_number;
 			verse.is_sajdah = checkSajdah(verse.verse_number, surahNumber);
-			verse.verse_url = getVerseURL(surahNumber, verse.verse_number);
-			delete verse.content;
-			delete verse.verse_number;
-			delete verse.surah_number;
+			verse.verseUrl = getVerseURL(surahNumber, verse.verse_number);
+			verse.translation =  getVerseTranslation(surahNumber, verse.verse_number, lang) || "";
 			return verse;
 		})
 
-		// surahData[surahNumber - 1].chapterUrl = getSurahURL(surahNumber);
-		// surahData[surahNumber - 1].juzNumber = 1
+		surahData[surahNumber - 1].chapterUrl = getSurahURL(surahNumber);
+		surahData[surahNumber - 1].juz = getJuzNumber(surahNumber,surahData[surahNumber - 1].aya);
 
 		return {
 			surahNumber: surahNumber,
@@ -57,7 +55,8 @@ function api(endpoint , lang){
 				name: getSurahName(surahNumber),
 				nameArabic: getSurahNameArabic(surahNumber),
 				chapterDetails:  surahData[surahNumber - 1],
-				verses:verseData
+				verses:verseData,
+
 			}
 		};
 	}

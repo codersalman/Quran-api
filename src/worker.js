@@ -35,7 +35,7 @@ export default {
       const endpoint = url.pathname.replace('/api/v1/', '');
 			// take language code in path parameter also to be used in the api function
 			const lang = url.searchParams.get('lang');
-			const data = api(endpoint, lang);
+			const data = await api(endpoint, lang);
 			if (data) {
 				return new Response(JSON.stringify(data), {
 					headers: { 'Content-Type': 'application/json' }
