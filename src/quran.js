@@ -1,9 +1,10 @@
 
 import quranText from './db/quran.json';
 import surahData from './db/surah-data.json';
-import pageData from './db/surah-data.json';
-import juzData from './db/surah-data.json';
+import pageData from './db/page-data.json';
+import juzData from './db/juz-data.json';
 import sajdahVerses from './db/sajdah-verses.json';
+import enClearQuran from './db/translations/enClearQuran.json';
 
 
 const totalPagesCount = 604;
@@ -54,6 +55,10 @@ function getJuzNumber(surahNumber, verseNumber) {
 }
 
 function getSurahAndVersesFromJuz(juzNumber) {
+	if (juzNumber > 30 || juzNumber <= 0) {
+		throw "No Juz found with given juzNumber";
+	}
+	console.log(juzData[29]["verses"]);
 	return juzData[juzNumber - 1]["verses"];
 }
 
@@ -236,6 +241,41 @@ function getVersesTextByPage(
 	return versesText.trim();
 }
 
+function getChapterAndItsVerses(surahNumber) {
+
+	const chapter = surahData[surahNumber - 1];
+	const verses = quranText.filter(verse => verse.surah_number === surahNumber);
+
+	return { chapter, verses  };
+
+
+}
+
+function checkSajdah(verseNumber, surahNumber) {
+
+	return 	sajdahVerses[surahNumber] === verseNumber;
+
+}
+
+function getVerseTranslation(surahNumber, verseNumber, lang) {
+	// const verse = quranText.find(verse => verse.surah_number === surahNumber && verse.verse_number === verseNumber);
+	// return verse.translation;
+
+	if (surahNumber > 114 || surahNumber <= 0) {
+		throw "No verse found with given surahNumber";
+	}
+	if (verseNumber > getVerseCount(surahNumber) || verseNumber <= 0) {
+		throw "No verse found with given verseNumber";
+	}
+
+	// if (lang === 'en') {
+	// 	return quranText.find(verse => verse.surah_number === surahNumber && verse.verse_number === verseNumber).translation;
+	// }
+
+	// console.log("enClearQuran", enClearQuran);
+
+}
+
 
 module.exports = {
 	getPageData,
@@ -255,4 +295,8 @@ module.exports = {
 	getVerseURL,
 	getVerseEndSymbol,
 	getSurahPages,
-	getVersesTextByPage,}
+	getChapterAndItsVerses,
+	getVersesTextByPage,
+	checkSajdah,
+	getVerseTranslation
+}
