@@ -5,8 +5,8 @@ import pageData from './db/page-data.json';
 import juzData from './db/juz-data.json';
 import sajdahVerses from './db/sajdah-verses.json';
 import enClearQuran from './db/translations/enClearQuran.json';
-import urTranslation from './db/translations/urTranslation.json';
-import enSaheeh from './db/translations/enSaheeh.json';
+// import urTranslation from './db/translations/urTranslation.json';
+// import enSaheeh from './db/translations/enSaheeh.json';
 
 
 const totalPagesCount = 604;
@@ -280,17 +280,17 @@ function getVerseTranslation(surahNumber, verseNumber, lang) {
 			}
 		}
 
-		for (const i of urTranslation) {
-			if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
-				translation.ur = i['content'];
-			}
-		}
+		// for (const i of urTranslation) {
+		// 	if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
+		// 		translation.ur = i['content'];
+		// 	}
+		// }
 
-	for (const i of enSaheeh) {
-		if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
-			translation.enSaheeh = i['content'];
-		}
-	}
+	// for (const i of enSaheeh) {
+	// 	if (i['surah_number'] === surahNumber && i['verse_number'] === verseNumber) {
+	// 		translation.enSaheeh = i['content'];
+	// 	}
+	// }
 
 
 
